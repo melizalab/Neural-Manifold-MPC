@@ -38,14 +38,15 @@ batch_size = 200
 # ---------------
 # Load MNIST data
 # ---------------
-print('LOADING TRAINING DATA...')
+print('Loading testing data...')
 _, mnist_data = load_MNIST_data(data_path=args.mnist_data_path,download=False)
 _,_,mnist_test = train_val_test_split(mnist_data,*model_params['train_val_test_ratios'],seed=model_params['training_random_seed'])
 data_loader = DataLoader(mnist_test, batch_size=batch_size, shuffle=False)
 
-
-# -----------
-n_trials = 50
+# --------------------------------------------------------------
+# Perform multiple test trails (recall noise is added to inputs)
+# --------------------------------------------------------------
+n_trials = 10
 trial_acc = []
 with torch.no_grad():
     for trial in range(n_trials):
@@ -65,4 +66,3 @@ with torch.no_grad():
         print(f'Trial: {trial+1}/{n_trials}, Acc: {100* trial_acc[-1]:.2f}%')
 plt.hist(trial_acc)
 plt.show()
-breakpoint()

@@ -11,10 +11,8 @@ from scipy.stats import pearsonr
 # ------------------------------
 # Append path for custom modules
 # ------------------------------
-snn_path = r"C:\Users\chris\OneDrive\Desktop\MPC_of_Neural_Manifold"
-sys.path.append(snn_path)
 from network_architectures import VAE as nets
-from load_SNN_data_for_VAE import VAE_dataloader,concatenate_spikes
+from .load_SNN_data_for_VAE import VAE_dataloader,concatenate_spikes
 
 # -----------
 # Parse Args
@@ -33,7 +31,6 @@ p.add_argument('--kl_scaling',default=0.001,type=float)
 p.add_argument('--learning_rate',default=1e-3,type=float)
 p.add_argument('--decay_rate',default=0.99,type=float)
 p.add_argument('--eps_scaling',default=1.0,type=float)
-p.add_argument('--is_binary',default=False,type=bool)
 p.add_argument('--num_examples',default=4000,type=int)
 # Path to Save VAE
 p.add_argument("--save_path", default='latent_control/saved_models/snn_vaes/SNN_VAE')
@@ -73,8 +70,7 @@ params = {'input_size':input_size,
           'kl_scaling':args.kl_scaling,
           'num_epochs':args.num_epochs,
           'learning_rate':args.learning_rate,
-          'deacy_rate':args.decay_rate,
-          'is_binary':args.is_binary}
+          'deacy_rate':args.decay_rate}
 
 # ------------
 # Instance VAE
@@ -148,8 +144,6 @@ params['final_learning_rate'] = optimizer.param_groups[0]['lr']
 net.eval()
 X = torch.from_numpy(measured_spikes).type(torch.float32)
 X_hat,mu,logvar = net(X.view(X.shape[0], -1).to(device))
-if params['is_binary']:
-    X_hat = torch.bernoulli(X_hat)
 
 # ----------
 # Save Model
