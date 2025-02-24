@@ -1,3 +1,4 @@
 .venv
 mnist_data
 assimilation_data/V_assimilation.npy
+saved_models/latent_dynamics_models/*

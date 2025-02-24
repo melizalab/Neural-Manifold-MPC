@@ -9,7 +9,6 @@ class VAE(nn.Module):
         self.latent_dim_size = params['latent_dim_size']
         self.hidden_layer_sizes = params['hidden_layer_sizes']  # List of hidden layer sizes
         self.eps_scaling = params['eps_scaling']
-        self.is_binary = params['is_binary']
 
         # Define encoding layers
         self.encoder_layers = nn.ModuleList()
@@ -53,7 +52,8 @@ class VAE(nn.Module):
     def decoder(self, z):
         for layer, bn in zip(self.decoder_layers, self.decoder_bns):
             z = F.relu(bn(layer(z)))  # Linear -> BatchNorm -> ReLU
-        x = torch.sigmoid(self.decode_output(z))  # Use torch.sigmoid instead of F.sigmoid (deprecated)
+        x = torch.sigmoid(self.decode_output(z))  # Use if decoded is between 0 and 1 (not normalized)
+        #x = self.decode_output(z)
         return x
 
     # Forward pass
