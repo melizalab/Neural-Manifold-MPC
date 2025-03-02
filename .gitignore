@@ -1,4 +1,10 @@
 .venv
 mnist_data
-assimilation_data/V_assimilation.npy
-saved_models/latent_dynamics_models/*
+assimilation_data/*
+saved_models/*
+assimilation_data/*
+neural_manifold_control/mpc/set_point_control/*
+neural_manifold_control/reactive_control/p_control/grid_search
+latent_dynamics_model/inspection_plots
+reference_trajectories/set_points
+__pycache__/
