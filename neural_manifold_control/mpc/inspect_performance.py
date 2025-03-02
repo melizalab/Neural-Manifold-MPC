@@ -22,7 +22,7 @@ def nMSE(z_ref,z_control):
 
 fig,ax = plt.subplots(2,2)
 alpha = 0.03
-Z_mean = np.zeros((990,2))
+Z_mean = np.zeros((1000,2))
 # Loop through files
 num_files = 0
 for file in glob.glob(f'{args.path_to_data}/prob_{args.prob_of_measurement}_sample_{args.sample_number}_trial*'):

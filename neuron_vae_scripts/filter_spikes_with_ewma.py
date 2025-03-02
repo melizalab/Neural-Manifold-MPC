@@ -6,7 +6,7 @@ import argparse
 # Parse Args
 # -----------
 p = argparse.ArgumentParser()
-p.add_argument('--alpha',default=0.05,type=float)
+p.add_argument('--alpha',default=0.1,type=float)
 p.add_argument('--in_data_path',default='assimilation_data/spikes_assimilation')
 p.add_argument('--out_data_path',default='assimilation_data/filtered_spikes_assimilation')
 args = p.parse_args()
@@ -51,9 +51,13 @@ for split in in_data.keys():
     # Save to out_data dict
     out_data[f'{split}'] = ewma_output_data
 
+# Save EWMA filtering hyperparameter
+out_data['alpha'] = args.alpha
+
 # ---------
 # Save Data
 # ---------
+np.save(f'{args.out_data_path}.npy',out_data)
 num_plots = 5
 fig,ax = plt.subplots(num_plots,3,sharex=True,sharey=True)
 for i in range(num_plots):
@@ -61,4 +65,4 @@ for i in range(num_plots):
     ax[i,1].plot(out_data['X_val']['reservoir_spikes'][i])
     ax[i,2].plot(out_data['X_test']['reservoir_spikes'][i])
 plt.show()
-np.save(f'{args.out_data_path}.npy',out_data)
+

@@ -14,7 +14,7 @@ import copy
 # Append path for custom modules
 # ------------------------------
 from network_architectures import VAE as model
-from .load_SNN_data_for_VAE import VAE_dataloader,concatenate_spikes
+from ..neuron_vae_scripts.load_SNN_data_for_VAE import VAE_dataloader,concatenate_spikes
 
 # -----------
 # Parse Args

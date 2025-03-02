@@ -20,6 +20,7 @@ args = p.parse_args()
 # ------------------
 forecast_data = np.load(f'{args.path_to_forecasts}/prob_{args.prob_of_measurement}_sample_{args.sample_number}.npy',allow_pickle=True)[()]
 Z_test = forecast_data['Z_test']
+
 # ------------------------
 # K-Means on Training Data
 # ------------------------
@@ -51,12 +52,30 @@ arc2_x = h+r*np.cos(a0+a*t-np.pi)
 arc2_y = k+r*np.sin(a0+a*t-np.pi)
 ref_traj_2 = np.array([arc2_x[::-1],arc2_y[::-1]]).T
 
-plt.scatter(Z_test[:,0],Z_test[:,1],s=.2,alpha=.5)
-plt.scatter(centers[0,0],centers[0,1],color='black')
-plt.scatter(centers[1,0],centers[1,1],color='black')
-plt.plot(ref_traj_1[:,0],ref_traj_1[:,1],label='ref traj 1')
-plt.plot(ref_traj_2[:,0],ref_traj_2[:,1],label='ref traj 2')
-plt.legend()
+
+
+fig = plt.figure()
+
+gs = fig.add_gridspec(2,5)
+ax1 = fig.add_subplot(gs[:, :2])
+ax2 = fig.add_subplot(gs[0, 2:])
+ax3 = fig.add_subplot(gs[1, 2:])
+
+# Scatter Plot
+ax1.scatter(Z_test[:,0],Z_test[:,1],s=.2,alpha=.5)
+ax1.scatter(centers[0,0],centers[0,1],color='black')
+ax1.scatter(centers[1,0],centers[1,1],color='black')
+ax1.plot(ref_traj_1[:,0],ref_traj_1[:,1],label='ref traj 1')
+ax1.plot(ref_traj_2[:,0],ref_traj_2[:,1],label='ref traj 2')
+
+# Ref Traj 1
+ax2.plot(ref_traj_1[:,0],label='Z1')
+ax2.plot(ref_traj_1[:,1],label='Z2')
+
+# Ref Traj 2
+ax3.plot(ref_traj_2[:,0],label='Z1')
+ax3.plot(ref_traj_2[:,1],label='Z2')
+
 plt.show()
 
 # -------------------------

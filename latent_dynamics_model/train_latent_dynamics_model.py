@@ -35,8 +35,8 @@ p.add_argument('--decay_rate',type=float,default=.99)
 p.add_argument('--batch_size',type=int,default=256)
 p.add_argument('--max_num_epochs',type=int,default=200)
 p.add_argument('--early_stopping_threshold',type=int,default=5)
-p.add_argument('--kl_scaling',type=float,default=0.01)
-p.add_argument('--learning_rate',type=float,default=3e-4)
+p.add_argument('--kl_scaling',type=float,default=0.001)
+p.add_argument('--learning_rate',type=float,default=5e-4)
 args = p.parse_args()
 
 # ---------------------
@@ -50,11 +50,14 @@ print(f'USING DEVICE: {device}')
 # ------------------------------------
 print('BUILDING NETWORK...')
 snn_vae_model_path_full = args.snn_vae_model_path+f'_prob_{args.prob_of_measurement}_sample_{args.sample_number}'
+snn_vae_dict = torch.load(f'{snn_vae_model_path_full}.pt')
+
 ldm = LDM(snn_vae_model_path_full,args.mnist_cvae_model_path).to(device)
 params = {'snn_params':
             {'snn_vae_model_path':snn_vae_model_path_full,
              'X_assimilation_path':args.X_assimilation_path,
-             'measurement_indxs_path':args.measurement_indxs_path},
+             'measurement_indxs_path':args.measurement_indxs_path,
+             'ewma_alpha':snn_vae_dict['model_params']['ewma_alpha']},
         'prob_of_measurement':args.prob_of_measurement,
         'sample_number':args.sample_number,
         'mnist_params':
@@ -68,7 +71,7 @@ params = {'snn_params':
              'max_num_epochs':args.max_num_epochs,
              'batch_size':args.batch_size,
              'kl_scaling':args.kl_scaling}}
-snn_vae_dict = torch.load(f'{snn_vae_model_path_full}.pt')
+
 # ------------------------
 # Load V Assimilation Data
 # ------------------------
@@ -130,9 +133,6 @@ def prediction_loop(x_n,v_n,x_future,v_future,model):
         Z_HATs = torch.stack(Z_HATs, dim=1)
 
         # Get Actual z_futures
-        '''
-        TODO: Maybe change this to the expectation instead?
-        '''
         Z_ACTUALs,_,_ = model.encode_x(x_future.view(-1,n_neurons))
         Z_ACTUALs = Z_ACTUALs.view(Z_HATs.shape[0],args.n_step_prediction+1,-1)
 
@@ -144,11 +144,6 @@ def prediction_loop(x_n,v_n,x_future,v_future,model):
                                        kl_scaling=args.kl_scaling)
         # Forecast prediction loss
         pred_loss = MSE_loss(Z_HATs[:,1:,:],Z_ACTUALs[:,1:,:])
-        '''
-        AB_weights = model.state_dict()['AB_dynamics.weight']
-        A = AB_weights[:,:2]
-        B = AB_weights[:,2:]
-        '''
         return recon_loss,kl_loss,pred_loss
 
 

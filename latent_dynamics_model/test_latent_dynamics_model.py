@@ -64,7 +64,7 @@ train_data_set = TimeSeriesDataset(train_spikes,V_train)
 test_data_set = TimeSeriesDataset(test_spikes,V_test)
 train_loader = DataLoader(train_data_set, batch_size=batch_size, shuffle=False)
 test_loader = DataLoader(test_data_set, batch_size=batch_size, shuffle=False)
-breakpoint()
+
 # True Latent States
 Z_train_actual,_,_= ldm.encode_x(torch.from_numpy(train_spikes).to(torch.float32).to(device))
 Z_test_actual,_,_= ldm.encode_x(torch.from_numpy(test_spikes).to(torch.float32).to(device))
@@ -156,4 +156,4 @@ ax[1,1].set_title(f'Test Z2 Corr:{Z_test_corrs[1]:.2f}')
 
 plt.tight_layout()
 save_path = args.model_path.split('/')[-1]
-plt.savefig(f'dynamics_model_scripts/inspection_plots/{save_path}.png')
+plt.savefig(f'latent_dynamics_model/inspection_plots/{save_path}.png')

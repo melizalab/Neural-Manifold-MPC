@@ -24,7 +24,7 @@ p.add_argument("--X_assimilation_path", default='assimilation_data/filtered_spik
 p.add_argument("--measurement_indxs_path", default='assimilation_data/spikes_measurement_indxs',type=str)
 p.add_argument('--prob_of_measurement',default=.2,type=float)
 p.add_argument('--sample_number',default=0,type=int)
-p.add_argument('--hidden_layer_sizes',nargs='+',default=[500,200,100,50,10], type = int)
+p.add_argument('--hidden_layer_sizes',nargs='+',default=[500,100,50,10], type = int)
 p.add_argument("--latent_dim_size", default=2, type=int)
 p.add_argument("--batch_size", default=256, type=int)
 p.add_argument("--num_epochs", default=20, type=int)
@@ -32,7 +32,6 @@ p.add_argument('--kl_scaling',default=0.001,type=float)
 p.add_argument('--learning_rate',default=5e-4,type=float)
 p.add_argument('--decay_rate',default=0.99,type=float)
 p.add_argument('--eps_scaling',default=1.0,type=float)
-p.add_argument('--std_eps',default=1e-5,type=float)
 p.add_argument('--num_examples',default=4000,type=int)
 # Path to Save VAE
 p.add_argument("--save_path", default='saved_models/snn_vaes/pretrained_SNN_VAE')
@@ -59,11 +58,6 @@ train_loader,input_size = VAE_dataloader(measured_spikes=measured_spikes,
                                          shuffle=True)
 print(f'Number of neurons recorded from: {input_size}')
 
-def normalize_batch(X_batch,std_eps=args.std_eps):
-    X_mean = X_batch.mean()
-    X_std = X_batch.std()
-    return (X_batch-X_mean)/(X_std+std_eps)
-
 # -------------------
 # Get VAE parameters
 # ------------------
@@ -76,7 +70,7 @@ params = {'input_size':input_size,
           'num_epochs':args.num_epochs,
           'learning_rate':args.learning_rate,
           'deacy_rate':args.decay_rate,
-          'std_eps':args.std_eps}
+          'ewma_alpha':full_data['alpha']}
 
 # ------------
 # Instance VAE
@@ -137,14 +131,15 @@ params['final_learning_rate'] = optimizer.param_groups[0]['lr']
 # --------------------
 # Evaluate predictions
 # --------------------
+'''
 model.eval()
-X = normalize_batch(torch.from_numpy(measured_spikes).float().to(device))
+X = torch.from_numpy(measured_spikes).float().to(device)
 X_hat,mu,logvar = model(X.view(X.shape[0], -1).to(device))
 fig,ax = plt.subplots(2,1,sharex=True,sharey=True)
 ax[0].imshow(X.detach().cpu().numpy().T,aspect='auto')
 ax[1].imshow(X_hat.detach().cpu().numpy().T,aspect='auto')
 plt.show()
-
+'''
 # ----------
 # Save Model
 # ----------
