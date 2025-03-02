@@ -34,7 +34,6 @@ model_params['is_online'] = True
 # Weights
 model_weights = model_dict['model_state_dict']
 batch_size = 200
-
 # ---------------
 # Load MNIST data
 # ---------------
