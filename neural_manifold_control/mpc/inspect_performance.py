@@ -38,18 +38,25 @@ for file in glob.glob(f'{args.path_to_data}/prob_{args.prob_of_measurement}_samp
     z2_nMSE = nMSE(Z_ref[:,1],Z_control[:,1])
 
     # Plot
-
     ax[0,0].plot(Z_control[:,0],color='red',alpha=alpha)
     ax[1,0].plot(Z_control[:,1],color='red',alpha=alpha)
+    ax[0,0].set_title('Z Latent State')
 
     ax[0,1].plot(V[:,0],color='blue',alpha=alpha)
     ax[1,1].plot(V[:,1],color='blue',alpha=alpha)
+    ax[0,1].set_title('V Latent Input')
             
 
 Z_mean = Z_mean/num_files
-ax[0,0].plot(Z_ref[:,0],color='black',alpha=0.5)
-ax[1,0].plot(Z_ref[:,1],color='black',alpha=0.5)
+ax[0,0].plot(Z_ref[:,0],color='black',alpha=0.5,label='ref traj')
+ax[1,0].plot(Z_ref[:,1],color='black',alpha=0.5, label = 'ref traj')
 ax[0,0].plot(Z_mean[:,0],color='darkred',alpha=0.5)
 ax[1,0].plot(Z_mean[:,1],color='darkred',alpha=0.5)
+ax[0,0].set_ylabel('Z1')
+ax[1,0].set_ylabel('Z2')
+ax[0,1].set_ylabel('V1')
+ax[1,1].set_ylabel('V2')
+plt.legend()
+plt.tight_layout()
 print(f'Num files: {num_files}')
 plt.show()

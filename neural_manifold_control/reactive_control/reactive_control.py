@@ -19,7 +19,7 @@ p.add_argument('--path_to_SNN',type=str,default='saved_models/snns/SNN_classifie
 p.add_argument('--path_to_LDM',type=str,default='saved_models/latent_dynamics_models/LDM_prob_0.2_sample_0')
 p.add_argument('--path_to_reference_trajectory',type=str,default='reference_trajectories/set_points')
 p.add_argument('--trial_id',type=int,default=0)
-p.add_argument('--path_to_save_output',type=str,default='neural_manifold_control/reactive_control/p_control/grid_search')
+p.add_argument('--path_to_save_output',type=str,default='neural_manifold_control/reactive_control/p_control/set_point_control')
 p.add_argument('--arc_num',type=int,default=1)
 p.add_argument('--p_gains',nargs='+',default=[90,0.5],type=float)
 args = p.parse_args()
@@ -71,7 +71,7 @@ print('Creating controller...')
 def p_controller(state,ref,p_gains=np.array(args.p_gains)):
     state_error = ref-state
     return p_gains*state_error
-    
+
 # ---------------------
 # Initialize collectors
 # ---------------------
@@ -122,7 +122,7 @@ for time_step in tqdm(range(n_steps)):
     
 # Save data
 save_dict = {'Z_control':Z,'Z_ref':ref_traj[:],'V':V}
-np.save(f"{args.path_to_save_output}/prob_{ldm_dict['prob_of_measurement']}_sample_{ldm_dict['sample_number']}_p_gains_{args.p_gains[0]}_{args.p_gains[1]}.npy",save_dict)
+np.save(f"{args.path_to_save_output}/prob_{ldm_dict['prob_of_measurement']}_sample_{ldm_dict['sample_number']}_trial_{args.trial_id}.npy",save_dict)
 def nMSE(z_ref,z_control):
     mse = np.mean((z_ref-z_control)**2)
     nmse = mse/(np.max(z_ref)-np.min(z_ref))
@@ -131,7 +131,7 @@ z1_nMSE = nMSE(ref_traj[:,0],Z[:,0])
 z2_nMSE = nMSE(ref_traj[:,1],Z[:,1])
 print(f'Z_1 nMSE: {z1_nMSE}')
 print(f'Z_2 nMSE: {z2_nMSE}')
-
+'''
 
 from scipy.ndimage import gaussian_filter1d
 
@@ -165,6 +165,6 @@ for i in range(n_steps):
     plt.imshow(U[i],aspect='auto')
     plt.pause(.01)
 plt.show()
-'''
+
 breakpoint()
 '''
