@@ -121,7 +121,7 @@ for time_step in tqdm(range(n_steps)):
     Z0 = Z[time_step]
     
 # Save data
-save_dict = {'Z_control':Z,'Z_ref':ref_traj[:],'V':V}
+save_dict = {'Z_control':Z,'Z_ref':ref_traj[:],'V':V,'spikes':spike_collector}
 np.save(f"{args.path_to_save_output}/prob_{ldm_dict['prob_of_measurement']}_sample_{ldm_dict['sample_number']}_trial_{args.trial_id}.npy",save_dict)
 def nMSE(z_ref,z_control):
     mse = np.mean((z_ref-z_control)**2)

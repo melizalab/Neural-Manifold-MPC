@@ -101,14 +101,6 @@ train_centers = centers[:40,:]
 val_centers = centers[40:80,:]
 test_centers = centers[80:,:]
 
-# Below does not work currently
-# But should be something like this
-'''
-training_centers = centers[:args.n_centers//6,:]
-validation_centers = centers[args.n_centers//5:,:]
-testing_centers = centers[args.n_centers//5:,:]
-'''
-
 print('Calculating Latent Trajectories...')
 V_train = get_latent_trajectory(train_centers,
                                 train_val_test='train',

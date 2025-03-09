@@ -4,7 +4,14 @@ assimilation_data/*
 saved_models/*
 assimilation_data/*
 neural_manifold_control/mpc/set_point_control/*
+neural_manifold_control/mpc/arc_1_control/*
+neural_manifold_control/mpc/arc_2_control/*
+neural_manifold_control/p_control/set_point_control/*
 neural_manifold_control/reactive_control/p_control/*
 latent_dynamics_model/inspection_plots
 reference_trajectories/set_points
+figures/raw_figures
+figures/completed_figures
+figures/data
+figures/x_forecast*
 __pycache__/

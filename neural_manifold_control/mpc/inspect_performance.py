@@ -8,12 +8,13 @@ import argparse
 # Parse Args
 # -----------
 p = argparse.ArgumentParser()
+#p.add_argument('--path_to_data',type=str,default='neural_manifold_control/reactive_control/p_control/set_point_control')
 p.add_argument('--path_to_data',type=str,default='neural_manifold_control/mpc/set_point_control')
+
 p.add_argument('--prob_of_measurement',default=.2,type=float)
 p.add_argument('--sample_number',default=0,type=int)
 p.add_argument('--num_time_steps',type=int,default=1000)
 args = p.parse_args()
-
 
 def nMSE(z_ref,z_control):
     mse = np.mean((z_ref-z_control)**2)

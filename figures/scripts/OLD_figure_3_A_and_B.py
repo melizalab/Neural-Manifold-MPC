@@ -8,9 +8,9 @@ from torch.utils.data import DataLoader
 from scipy.stats import pearsonr
 
 from neuron_vae_scripts.load_SNN_data_for_VAE import *
-from .time_series_loader import TimeSeriesDataset
+from latent_dynamics_model.time_series_loader import TimeSeriesDataset
 from network_architectures.latent_linear_dynamics import LDM
-from .forecasting_functions import *
+from latent_dynamics_model.forecasting_functions import *
 
 # -----------
 # Parse Args
@@ -25,7 +25,6 @@ args = p.parse_args()
 # ---------------------
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 print(f'USING DEVICE: {device}')
-
 
 # ---------
 # Load LDM
@@ -74,6 +73,11 @@ Z_data = {'Z_train':Z_train_actual.detach().cpu().numpy(),'Z_test':Z_test_actual
 print('Saving Z assimilation data...')
 np.save(args.Z_out_path+f"/prob_{ldm_dict['prob_of_measurement']}_sample_{ldm_dict['sample_number']}.npy",Z_data)
 
+
+
+
+
+
 # Open Loop Forecasts (Latent States)
 AB_weights = ldm.state_dict()['AB_dynamics.weight']
 A = AB_weights[:,:2]
@@ -86,25 +90,6 @@ def Z_forecast(Z_data,V_data,n_steps):
     for i in range(1,n_steps):
         Z_hat[i] = ldm.forward_dynamics(Z_hat[i-1],V_data[i-1])
     return Z_hat
-'''
-def X_forecast(X_data,V_data,n_steps):
-    X_hat = torch.zeros((n_steps,122)).to(device)
-    X_hat[0] = X_data[0]
-    for i in range(1,n_steps):
-        X_hat[i],_,_,_,_,_ = ldm(X_hat[i-1].reshape(1,-1),V_data[i-1].reshape(1,-1))
-    return X_hat
-
-
-print('Train forecast...')
-X_hat_train = X_forecast(torch.from_numpy(train_spikes),V_train_tensor,n_steps=n_steps)
-print('Test forecast...')
-X_hat_test = X_forecast(torch.from_numpy(test_spikes),V_test_tensor,n_steps=n_steps)
-
-fig,ax = plt.subplots(2,1,sharex=True,sharey=True)
-ax[0].imshow(test_spikes.T,aspect='auto')
-ax[1].imshow(X_hat_test.detach().cpu().T,aspect='auto')
-plt.show()
-'''
 
 def Z_corr(Z_actual,Z_hat):
     z1_corr = pearsonr(Z_actual[1:, 0], Z_hat[:, 0])[0]
@@ -153,6 +138,54 @@ ax[1,0].set_title(f'Train Z2 Corr:{Z_train_corrs[1]:.2f}')
 ax[0,1].set_title(f'Test Z1 Corr:{Z_test_corrs[0]:.2f}')
 ax[1,1].set_title(f'Test Z2 Corr:{Z_test_corrs[1]:.2f}')
 
+ax[0,0].set_yticks([-0.1, 0 , 0.1])
+ax[1,0].set_yticks([-0.1, 0 , 0.1])
+ax[0,0].set_ylim([-0.15,0.15])
+ax[1,0].set_ylim([-0.15,0.15])
 plt.tight_layout()
-save_path = args.model_path.split('/')[-1]
-plt.savefig(f'latent_dynamics_model/inspection_plots/{save_path}.png')
+plt.savefig(f'figures/raw_figures/Figure_3_Z_forecasts.pdf')
+
+
+# Z Scatter Plot
+fig,ax = plt.subplots(1,2,sharex=True,sharey=True,figsize=(10,5))
+ax[0].scatter(Z_train_actual[:,0],Z_train_actual[:,1],s=.1,alpha=.5)
+ax[1].scatter(Z_test_actual[:,0],Z_test_actual[:,1],s=.1,alpha=.5)
+ax[0].set_yticks([-0.1, 0 , 0.1])
+ax[0].set_ylim([-0.11,0.11])
+ax[0].set_xticks([-0.1, 0 , 0.1])
+ax[0].set_xlim([-0.11,0.11])
+ax[0].set_title('Training')
+ax[1].set_title('Testing')
+ax[0].set_xlabel('Z1')
+ax[0].set_ylabel('Z2')
+ax[1].set_xlabel('X1')
+plt.savefig('figures/raw_figures/Figures_3_Z_scatter.pdf')
+
+
+
+def X_forecast(X_data,V_data,n_steps):
+    X_hat = torch.zeros((n_steps,122)).to(device)
+    X_hat[0] = X_data[0]
+    for i in range(1,n_steps):
+        X_hat[i],_,_,_,_,_ = ldm(X_hat[i-1].reshape(1,-1),V_data[i-1].reshape(1,-1))
+    return X_hat
+
+
+print('Train forecast...')
+X_hat_train = X_forecast(torch.from_numpy(train_spikes),V_train_tensor,n_steps=n_steps)
+print('Test forecast...')
+X_hat_test = X_forecast(torch.from_numpy(test_spikes),V_test_tensor,n_steps=n_steps)
+
+np.save('figures/x_forecast_dict.npy',{'Train':{'spikes':train_spikes,'forecast':X_hat_train},'Test':{'spikes':test_spikes,'forecast':X_hat_test}})
+
+
+fig,ax = plt.subplots(2,2,sharey=True,sharex=True)
+ax[0,0].imshow(train_spikes[29000:30000].T,aspect='auto')
+ax[1,0].imshow(X_hat_train[29000:30000].detach().cpu().T,aspect='auto')
+
+ax[0,1].imshow(test_spikes[19000:20000].T,aspect='auto')
+ax[1,1].imshow(X_hat_test[19000:20000].detach().cpu().T,aspect='auto')
+ax[0,0].set_xticks([0,500,1000])
+
+plt.show()
+breakpoint()

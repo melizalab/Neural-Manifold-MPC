@@ -135,7 +135,7 @@ spike_collector = np.zeros((n_steps,len(indxs['raw_indxs'])))
 Z0 = ref_traj[0,:]
 mpc.x0 = Z0
 mpc.set_initial_guess()
-K = -100
+
 # ------------
 # Control Loop
 # ------------
@@ -174,7 +174,7 @@ for time_step in tqdm(range(n_steps)):
     Z0 = Z[time_step]
 
 # Save data
-save_dict = {'Z_control':Z,'Z_ref':ref_traj[:-args.n_horizon],'V':V}
+save_dict = {'Z_control':Z,'Z_ref':ref_traj[:-args.n_horizon],'V':V,'spikes':spike_collector}
 np.save(f"{args.path_to_save_output}/prob_{ldm_dict['prob_of_measurement']}_sample_{ldm_dict['sample_number']}_trial_{args.trial_id}.npy",save_dict)
 def nMSE(z_ref,z_control):
     mse = np.mean((z_ref-z_control)**2)
@@ -184,8 +184,8 @@ z1_nMSE = nMSE(ref_traj[:-args.n_horizon,0],Z[:,0])
 z2_nMSE = nMSE(ref_traj[:-args.n_horizon,1],Z[:,1])
 print(f'Z_1 nMSE: {z1_nMSE}')
 print(f'Z_2 nMSE: {z2_nMSE}')
-
 '''
+
 from scipy.ndimage import gaussian_filter1d
 
 def gaussian_smoothing(arr, sigma=10):

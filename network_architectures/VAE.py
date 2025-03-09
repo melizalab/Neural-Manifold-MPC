@@ -38,7 +38,7 @@ class VAE(nn.Module):
     # Encoding block
     def encoder(self, x):
         for layer, bn in zip(self.encoder_layers, self.encoder_bns):
-            x = F.relu(bn(layer(x)))  # Linear -> BatchNorm -> ReLU
+            x = F.relu(bn(layer(x)))
         mu = self.enc_mean(x)
         logvar = self.enc_logvar(x)
         return mu, logvar
