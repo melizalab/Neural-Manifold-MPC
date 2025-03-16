@@ -16,3 +16,5 @@ figures/data
 figures/x_forecast*
 __pycache__/
 *.pyc
+network_architectures/__pycache__/VAE.cpython-38.pyc
+snn_scripts/__pycache__/test_SNN.cpython-38.pyc
