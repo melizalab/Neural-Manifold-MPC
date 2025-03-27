@@ -9,7 +9,7 @@ from network_architectures.latent_linear_dynamics import LDM
 # Parse Args
 # -----------
 p = argparse.ArgumentParser()
-p.add_argument('--path_to_p_data',type=str,default='./neural_manifold_control/reactive_control/p_control/set_point_control')
+p.add_argument('--path_to_p_data',type=str,default='./neural_manifold_control/reactive_control/pid_control/set_point_control')
 p.add_argument('--path_to_mpc_data',type=str,default='./neural_manifold_control/mpc/set_point_control')
 p.add_argument('--path_to_LDM',default='saved_models/latent_dynamics_models/LDM_prob_0.2_sample_0')
 args = p.parse_args()
@@ -41,9 +41,9 @@ for i,time in enumerate(times):
 ax[0,0].set_title('200 ms')
 ax[0,1].set_title('500 ms')
 ax[0,2].set_title('800 ms')
-ax[0,0].set_ylabel('Prop. Control')
+ax[0,0].set_ylabel('PFC')
 ax[1,0].set_ylabel('MPC')
 for a in ax.flatten():
     a.set_xticks([])
     a.set_yticks([])
-plt.savefig('figures/raw_figures/figure_4_control_images.pdf')
+plt.savefig('figures/pid_figures/figure_4_control_images.pdf')

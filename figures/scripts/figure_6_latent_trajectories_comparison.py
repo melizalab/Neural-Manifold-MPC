@@ -20,8 +20,8 @@ def nMSE(z_ref,z_control):
     nmse = mse/(np.max(z_ref)-np.min(z_ref))
     return nmse
 
-def get_arcs(ref_path,trial):
-    arc_data = np.load(f'{args.path_to_mpc_data}/{ref_path}_control/prob_0.2_sample_0_trial_{trial}.npy',allow_pickle=True)[()]
+def get_arcs(ref_path,sample,trial):
+    arc_data = np.load(f'{args.path_to_mpc_data}/{ref_path}_control/prob_0.2_sample_{sample}_trial_{trial}.npy',allow_pickle=True)[()]
     Z_control = arc_data['Z_control']
     Z_ref = arc_data['Z_ref']
     V = arc_data['V']
@@ -51,10 +51,10 @@ ax[2,0].get_shared_y_axes().join(ax[2,0], ax[2,1])
 arc_1_mean = np.zeros((1000,2))
 arc_2_mean = np.zeros((1000,2))
 
-
+sample = 0
 for trial in range(n_trials):
-    Z_control_arc_1,Z_ref_arc_1,V_arc_1 = get_arcs(ref_path='arc_1',trial=trial)
-    Z_control_arc_2,Z_ref_arc_2,V_arc_2 = get_arcs(ref_path='arc_2',trial=trial)
+    Z_control_arc_1,Z_ref_arc_1,V_arc_1 = get_arcs(ref_path='arc_1',sample=sample,trial=trial)
+    Z_control_arc_2,Z_ref_arc_2,V_arc_2 = get_arcs(ref_path='arc_2',sample=sample,trial=trial)
 
     # Get mean controlled trajectory
     arc_1_mean += Z_control_arc_1
@@ -89,6 +89,8 @@ ax[0,1].plot(Z_ref_arc_1[:,1],color='black',alpha=0.5,linewidth=1)
 ax[1,0].plot(Z_ref_arc_2[:,0],color='black',alpha=0.5,linewidth=1)
 ax[1,1].plot(Z_ref_arc_2[:,1],color='black',alpha=0.5,linewidth=1)
 
+ax1.scatter(Z_test[:,0],Z_test[:,1],s=.2,alpha=.5)
+
 ax[0,0].set_xticks([0,250,500,750,1000])
 ax[0,0].set_ylim([-0.07,0.07])
 ax[1,0].set_ylim([-0.07,0.07])
@@ -96,5 +98,7 @@ ax[1,0].set_ylim([-0.07,0.07])
 ax[0,1].set_yticklabels([])
 ax[1,1].set_yticklabels([])
 ax[2,1].set_yticklabels([])
+plt.show()
+breakpoint()
 plt.savefig('figures/raw_figures/figure_6_B_latent_trajectories.pdf')
 

@@ -8,7 +8,6 @@ from stimulus_scripts.load_mnist_data import load_MNIST_data,train_val_test_spli
 from tqdm import tqdm
 from sklearn.cluster import KMeans
 # -----------
-
 # Parse Args
 # -----------
 p = argparse.ArgumentParser()
@@ -17,6 +16,11 @@ p.add_argument('--mnist_data_path',default='mnist_data')
 args = p.parse_args()
 
 
+plt.rcParams.update({
+    'axes.labelsize': 8,      # Axis labels
+    'xtick.labelsize': 6,     # X-axis tick labels
+    'ytick.labelsize': 6,     # Y-axis tick labels
+})
 # ---------------------
 # Use CUDA if available
 # ---------------------
@@ -57,10 +61,10 @@ centers = kmeans.cluster_centers_
 # ----
 # Plot
 # ----
-plt.figure(figsize=(10, 10))
+plt.figure(figsize=(5, 5))
 
-plt.scatter(latent_rep[:, 0], latent_rep[:, 1], c=labels, cmap='tab10', s=1.5, alpha=0.7) # Test embeddings
-plt.scatter(centers[:,0],centers[:,1],color='black',s=10,marker='d') # Centers
+plt.scatter(latent_rep[:, 0], latent_rep[:, 1], c=labels, cmap='tab10', s=.5, alpha=0.7) # Test embeddings
+plt.scatter(centers[80:,0],centers[80:,1],color='black',s=10,marker='d') # Centers
 
 plt.xlabel("Latent Dimension 1")
 plt.ylabel("Latent Dimension 2")

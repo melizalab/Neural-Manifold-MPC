@@ -16,8 +16,8 @@ from network_architectures.latent_linear_dynamics import LDM
 # -----------
 p = argparse.ArgumentParser()
 p.add_argument('--path_to_SNN',type=str,default='saved_models/snns/SNN_classifier')
-p.add_argument('--path_to_LDM',type=str,default='saved_models/latent_dynamics_models/LDM_prob_0.2_sample_0')
-p.add_argument('--path_to_reference_trajectory',type=str,default='reference_trajectories/set_points')
+p.add_argument('--path_to_LDM',type=str,default='saved_models/latent_dynamics_models/LDM_prob_0.2_sample_4')
+p.add_argument('--path_to_reference_trajectory',type=str,default='reference_trajectories/arcs')
 p.add_argument('--trial_id',type=int,default=0)
 p.add_argument('--path_to_save_output',type=str,default='neural_manifold_control/mpc/set_point_control')
 p.add_argument('--arc_num',type=int,default=1)
@@ -184,23 +184,29 @@ z1_nMSE = nMSE(ref_traj[:-args.n_horizon,0],Z[:,0])
 z2_nMSE = nMSE(ref_traj[:-args.n_horizon,1],Z[:,1])
 print(f'Z_1 nMSE: {z1_nMSE}')
 print(f'Z_2 nMSE: {z2_nMSE}')
-'''
 
+'''
 from scipy.ndimage import gaussian_filter1d
 
 def gaussian_smoothing(arr, sigma=10):
     return gaussian_filter1d(arr, sigma)
 
 # Plot state errors
+offset = 40
+
 fig,ax = plt.subplots(2,1,sharey=True,sharex=True)
-ax[0].plot(ref_traj[:,0],color='black',alpha=0.5)
-ax[0].plot(Z[:,0],color='red',alpha=0.5)
-ax[0].plot(gaussian_smoothing(Z[:,0]),color='darkred',alpha=0.5)
-ax[1].plot(ref_traj[:,1],color='black',alpha=0.5)
-ax[1].plot(Z[:,1],color='red',alpha=0.5)
+ax[0].plot(ref_traj[offset :,0],color='black',alpha=0.5)
+ax[0].plot(Z[offset :,0],color='red',alpha=0.5)
+ax[0].plot(gaussian_smoothing(Z[offset :,0]),color='darkred',alpha=0.5)
+ax[1].plot(ref_traj[offset :,1],color='black',alpha=0.5)
+ax[1].plot(Z[offset :,1],color='red',alpha=0.5)
 ax[1].plot(gaussian_smoothing(Z[:,1]),color='darkred',alpha=0.5)
 plt.show()
 
+plt.plot(ref_traj[:,0],ref_traj[:,1],color='black',alpha=0.5)
+plt.plot(Z[offset :,0],Z[offset :,1],color='red',alpha=0.5)
+plt.plot(gaussian_smoothing(Z[offset:,0]),gaussian_smoothing(Z[offset:,1]),color='darkred',alpha=0.5)
+plt.show()
 
 plt.plot(V)
 plt.show()
@@ -209,7 +215,7 @@ plt.show()
 # Plot Spikes
 plt.imshow(-1*spike_collector.T,aspect='auto',cmap='gray')
 plt.show()
-breakpoint()
+
 
 
 # Plot inputs

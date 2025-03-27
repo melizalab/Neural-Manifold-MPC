@@ -12,7 +12,7 @@ plt.rcParams.update({
 # Parse Args
 # -----------
 p = argparse.ArgumentParser()
-p.add_argument('--path_to_p_data',type=str,default='./neural_manifold_control/reactive_control/p_control/set_point_control')
+p.add_argument('--path_to_p_data',type=str,default='./neural_manifold_control/reactive_control/pid_control/set_point_control')
 p.add_argument('--path_to_mpc_data',type=str,default='./neural_manifold_control/mpc/set_point_control')
 args = p.parse_args()
 
@@ -59,18 +59,18 @@ p_nMSE[7].mean(1).argmin() = 9
 import matplotlib.pyplot as plt
 import numpy as np
 
-probs = [0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
-best_samples = [1, 4, 1, 0, 2, 4, 2, 9]
+#probs = [0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+#best_samples = [1, 4, 1, 0, 2, 4, 2, 9]
 
 
 
 
 probs = [0.01,0.05,0.1,0.2,0.3,0.4,0.5,0.6]
-best_samples = [1,4,1,0,2,4,2,9]
+best_samples = [1,0,5,6,8,8,5,0]
 fig,ax = plt.subplots(4,4,sharex=True,figsize=(5,4))
 ylims =[]
 for i,prob in enumerate(probs):
-    for trial in range(n_trials):
+    for j,trial in enumerate(range(n_trials)):
         p_file = f'{args.path_to_p_data}/prob_{prob}_sample_{best_samples[i]}_trial_{trial}.npy'
         mpc_file = f'{args.path_to_mpc_data}/prob_{prob}_sample_{best_samples[i]}_trial_{trial}.npy'
 
@@ -79,16 +79,18 @@ for i,prob in enumerate(probs):
 
         # Get ref traj
         Z_ref = mpc_data['Z_ref']
-        Z1_ref_range = Z_ref[:,0].max()-Z_ref[:,0].min()
-        Z2_ref_range = Z_ref[:,1].max()-Z_ref[:,1].min()
+        if j == 0: # only need to do for first trial in prob
+            Z1_ref_range = Z_ref[:,0].max()-Z_ref[:,0].min()
+            Z2_ref_range = Z_ref[:,1].max()-Z_ref[:,1].min()
 
-        range_scaling = 2
-        Z1_ref_range*=range_scaling
-        Z2_ref_range*=range_scaling
+            range_scaling = 2
+            Z1_ref_range*=range_scaling
+            Z2_ref_range*=range_scaling
 
         if i < 4:
-            ax[0,i].plot(Z_ref[:,0],color='black',alpha=0.5,linewidth=1)
-            ax[1,i].plot(Z_ref[:,1],color='black',alpha=0.5,linewidth=1)
+            if j == 0: # only need to do for first trial in prob
+                ax[0,i].plot(Z_ref[:,0],color='black',alpha=0.5,linewidth=1)
+                ax[1,i].plot(Z_ref[:,1],color='black',alpha=0.5,linewidth=1)
 
             ax[0,i].plot(p_data['Z_control'][:,0],color=p_color,alpha = alpha,linewidth=linewidth)
             ax[1,i].plot(p_data['Z_control'][:,1],color=p_color,alpha=alpha,linewidth=linewidth)
@@ -104,8 +106,9 @@ for i,prob in enumerate(probs):
             ax[1,i].set_ylim([Z_ref[:,1].min()-Z2_ref_range*1.25,Z_ref[:,1].max()+Z2_ref_range*1.25])
 
         else:
-            ax[2,i-4].plot(Z_ref[:,0],color='black',alpha=0.5,linewidth=1)
-            ax[3,i-4].plot(Z_ref[:,1],color='black',alpha=0.5,linewidth=1)
+            if j == 0: # only need to do for first trial in prob
+                ax[2,i-4].plot(Z_ref[:,0],color='black',alpha=0.5,linewidth=1)
+                ax[3,i-4].plot(Z_ref[:,1],color='black',alpha=0.5,linewidth=1)
 
             ax[2,i-4].plot(p_data['Z_control'][:,0],color=p_color,alpha = alpha,linewidth=linewidth)
             ax[3,i-4].plot(p_data['Z_control'][:,1],color=p_color,alpha=alpha,linewidth=linewidth)
@@ -127,4 +130,5 @@ for j,a in enumerate(ax.flatten()):
     a.set_yticklabels([-2,0,2])
 
 plt.tight_layout()
-plt.savefig('figures/raw_figures/figure_5_C_latent_trajectories.pdf')
+plt.show()
+#plt.savefig('figures/pid_figures/figure_5_C_latent_trajectories.pdf')

@@ -73,7 +73,6 @@ params = {'image_size':784,
 print('BUILDING NETWORK...')
 model = model.VAE(params).to(device)
 
-
 # --------------------
 # Initialize optimizer
 # --------------------

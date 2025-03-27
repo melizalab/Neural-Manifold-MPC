@@ -13,7 +13,7 @@ plt.rcParams.update({
 # Parse Args
 # -----------
 p = argparse.ArgumentParser()
-p.add_argument('--path_to_p_data',type=str,default='./neural_manifold_control/reactive_control/p_control/set_point_control/prob_0.2_sample_0_trial_0')
+p.add_argument('--path_to_p_data',type=str,default='./neural_manifold_control/reactive_control/pid_control/set_point_control/prob_0.2_sample_0_trial_0')
 p.add_argument('--path_to_mpc_data',type=str,default='./neural_manifold_control/mpc/set_point_control/prob_0.2_sample_0_trial_0')
 p.add_argument('--path_to_LDM',default='saved_models/latent_dynamics_models/LDM_prob_0.2_sample_0')
 args = p.parse_args()
@@ -81,5 +81,5 @@ ax[0].set_title('200 ms')
 ax[1].set_title('500 ms')
 ax[2].set_title('800 ms')
 
-plt.savefig('figures/raw_figures/figure_4_vector_field.pdf')
+plt.savefig('figures/pid_figures/figure_4_vector_field.pdf')
 

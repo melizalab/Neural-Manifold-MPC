@@ -1,8 +1,6 @@
 import argparse
-import do_mpc
 import numpy as np
 import matplotlib.pyplot as plt
-import sys
 import torch
 import pandas as pd
 from tqdm import tqdm
@@ -19,9 +17,10 @@ p.add_argument('--path_to_SNN',type=str,default='saved_models/snns/SNN_classifie
 p.add_argument('--path_to_LDM',type=str,default='saved_models/latent_dynamics_models/LDM_prob_0.2_sample_0')
 p.add_argument('--path_to_reference_trajectory',type=str,default='reference_trajectories/set_points')
 p.add_argument('--trial_id',type=int,default=0)
-p.add_argument('--path_to_save_output',type=str,default='neural_manifold_control/reactive_control/p_control/set_point_control')
+p.add_argument('--path_to_save_output',type=str,default='neural_manifold_control/reactive_control/pid_control/set_point_control')
 p.add_argument('--arc_num',type=int,default=1)
-p.add_argument('--p_gains',nargs='+',default=[90,0.5],type=float)
+#p.add_argument('--p_gains',nargs='+',default=[10, 50, 20, 50],type=float)
+p.add_argument('--p_gains',nargs='+',default=[90,0.5,10,0.5],type=float)
 args = p.parse_args()
 
 # ----------
@@ -68,9 +67,35 @@ elif args.path_to_reference_trajectory.split('/')[-1] == 'arc':
 # Set up controller
 # -----------------
 print('Creating controller...')
-def p_controller(state,ref,p_gains=np.array(args.p_gains)):
+def p_controller(state,ref,p_gains=np.array(args.p_gains).reshape(2,2)):
     state_error = ref-state
-    return p_gains*state_error
+    return p_gains@state_error
+
+class PIDController:
+    def __init__(self, Kp, Ki, Kd):
+        """
+        Kp, Ki, Kd: 2D gain matrices (2x2)
+        """
+        self.Kp = Kp
+        self.Ki = Ki
+        self.Kd = Kd
+        
+        self.integral_error = np.zeros(2)
+        self.prev_error = np.zeros(2)
+    
+    def control_law(self, x, r):
+        """
+        x: Current state (2D vector)
+        r: Reference trajectory (2D vector)
+        Returns: Control input (2D vector)
+        """
+        error = r - x
+        self.integral_error += error
+        derivative_error = (error - self.prev_error)
+        self.prev_error = error
+        
+        u = self.Kp @ error + self.Ki @ self.integral_error + self.Kd @ derivative_error
+        return u
 
 # ---------------------
 # Initialize collectors
@@ -85,12 +110,20 @@ spike_collector = np.zeros((n_steps,len(indxs['raw_indxs'])))
 # Set initial guess
 # -----------------
 Z0 = ref_traj[0,:]
-
+'''
+Z_1 nMSE: 0.012908929234801735
+Z_2 nMSE: 0.007656920998041243
+'''
 # ------------
 # Control Loop
 # ------------
+Kp = np.array([20,20,5,20]).reshape(2,2)
+Ki = np.array([.9,.9,.1,.1]).reshape(2,2)
+Kd = np.array([.01,.01,.01,.01]).reshape(2,2)
+pid = PIDController(Kp,Ki,Kd)
 for time_step in tqdm(range(n_steps)):
-    v_control = p_controller(Z0,ref_traj[time_step,:])
+    #v_control = p_controller(Z0,ref_traj[time_step,:])
+    v_control = pid.control_law(Z0,ref_traj[time_step])
     # Save for inspection
     V[time_step] = v_control.flatten()
 
@@ -131,25 +164,22 @@ z1_nMSE = nMSE(ref_traj[:,0],Z[:,0])
 z2_nMSE = nMSE(ref_traj[:,1],Z[:,1])
 print(f'Z_1 nMSE: {z1_nMSE}')
 print(f'Z_2 nMSE: {z2_nMSE}')
-'''
 
+'''
 from scipy.ndimage import gaussian_filter1d
 
 def gaussian_smoothing(arr, sigma=10):
     return gaussian_filter1d(arr, sigma)
 
 # Plot state errors
-fig,ax = plt.subplots(2,1,sharey=True,sharex=True)
+fig,ax = plt.subplots(3,1,sharex=True)
 ax[0].plot(ref_traj[:,0],color='black',alpha=0.5)
 ax[0].plot(Z[:,0],color='red',alpha=0.5)
 ax[0].plot(gaussian_smoothing(Z[:,0]),color='darkred',alpha=0.5)
 ax[1].plot(ref_traj[:,1],color='black',alpha=0.5)
 ax[1].plot(Z[:,1],color='red',alpha=0.5)
 ax[1].plot(gaussian_smoothing(Z[:,1]),color='darkred',alpha=0.5)
-plt.show()
-
-
-plt.plot(V)
+ax[2].plot(V)
 plt.show()
 
 # Plot Spikes

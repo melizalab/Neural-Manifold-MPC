@@ -17,7 +17,7 @@ linewidths =1
 # Parse Args
 # -----------
 p = argparse.ArgumentParser()
-p.add_argument('--path_to_p_data',type=str,default='./neural_manifold_control/reactive_control/p_control/set_point_control')
+p.add_argument('--path_to_p_data',type=str,default='./neural_manifold_control/reactive_control/pid_control/set_point_control')
 p.add_argument('--path_to_mpc_data',type=str,default='./neural_manifold_control/mpc/set_point_control')
 args = p.parse_args()
 
@@ -29,7 +29,8 @@ mpc_data = np.load(f'{args.path_to_mpc_data}/prob_0.2_sample_0_trial_0.npy',allo
 p_spikes = np.zeros((1000))
 mpc_spikes = np.zeros((1000))
 
-for trial in range(50):
+n_trials = 10
+for trial in range(n_trials):
     p_file = f'{args.path_to_p_data}/prob_0.2_sample_0_trial_{trial}.npy'
     mpc_file = f'{args.path_to_mpc_data}/prob_0.2_sample_0_trial_{trial}.npy'
 
@@ -41,8 +42,8 @@ for trial in range(50):
 
 # Apply Gaussian smoothing
 sigma = 5  # Adjust smoothing level (higher = more smoothing)
-p_spikes_smooth = gaussian_filter1d(p_spikes/50, sigma=sigma)
-mpc_spikes_smooth = gaussian_filter1d(mpc_spikes/50, sigma=sigma)
+p_spikes_smooth = gaussian_filter1d(p_spikes/n_trials, sigma=sigma)
+mpc_spikes_smooth = gaussian_filter1d(mpc_spikes/n_trials, sigma=sigma)
 fig,ax = plt.subplots(2,1,sharex=True,sharey=True,figsize=(6,1))
 
 ax[0].plot(p_spikes_smooth,color='black',alpha=alpha,linewidth=linewidths)
@@ -53,7 +54,7 @@ ax[1].plot(gaussian_filter1d(mpc_data['spikes'].sum(1), sigma=sigma),color=mpc_c
 ax[1].set_xticks([0,250,500,750,1000])
 ax[1].set_xlim([0,1000])
 ax[1].set_yticks([2,4,6])
-plt.savefig('figures/raw_figures/figure_4_rates.pdf')
+plt.savefig('figures/pid_figures/figure_4_rates.pdf')
 
 fig,ax = plt.subplots(2,1,sharex=True,sharey=True,figsize=(6,2))
 t = np.arange(0, 1000)  # Time vector
@@ -72,4 +73,4 @@ for i in range(122):
 ax[1].set_xticks([0, 250, 500, 750, 1000])
 ax[1].set_xlim([0, 1000])
 
-plt.savefig('figures/raw_figures/figure_4_rasters.pdf')
+plt.savefig('figures/pid_figures/figure_4_rasters.pdf')
