@@ -29,7 +29,7 @@ print(f'USING DEVICE: {device}')
 model_dict = torch.load(f'{args.model_path}.pt')
 params = model_dict['model_params']
 model = model.VAE(params).to(device)
-model.load_state_dict(torch.load(model_dict['model_state_dict']))
+model.load_state_dict(model_dict['model_state_dict'])
 model.eval()
 dim_size = params['latent_dim_size']
 
