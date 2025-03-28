@@ -16,8 +16,8 @@ from network_architectures.latent_linear_dynamics import LDM
 # -----------
 p = argparse.ArgumentParser()
 p.add_argument('--path_to_SNN',type=str,default='saved_models/snns/SNN_classifier')
-p.add_argument('--path_to_LDM',type=str,default='saved_models/latent_dynamics_models/LDM_prob_0.2_sample_4')
-p.add_argument('--path_to_reference_trajectory',type=str,default='reference_trajectories/arcs')
+p.add_argument('--path_to_LDM',type=str,default='saved_models/latent_dynamics_models/LDM_prob_0.2_sample_0')
+p.add_argument('--path_to_reference_trajectory',type=str,default='reference_trajectories/set_points')
 p.add_argument('--trial_id',type=int,default=0)
 p.add_argument('--path_to_save_output',type=str,default='neural_manifold_control/mpc/set_point_control')
 p.add_argument('--arc_num',type=int,default=1)
