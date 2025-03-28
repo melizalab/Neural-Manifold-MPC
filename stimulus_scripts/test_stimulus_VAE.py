@@ -85,17 +85,4 @@ plt.show()
 
 
 
-'''
-# REMINDER THAT SCALING DOESN'T ALWAYS CARRY OVER (warning to future me)
-for i, (image,label) in enumerate(train_data):
-    X1 = image[0]
-    #the first index is batch size (set to 1 here) so having X1=image[0] produces
-    #the same values as X1=image, just without the batch index.
-    X2 = train_data.data[i]
-    fig,ax = plt.subplots(1,3)
-    ax[0].imshow(X1)
-    ax[1].imshow(X2)
-    ax[2].imshow(X1-X2)
-    plt.show()
-    breakpoint()
-'''
+
