@@ -24,7 +24,7 @@ p.add_argument('--step_len',default=500,type=int)
 p.add_argument('--slow_len',default=1000,type=int)
 p.add_argument('--fast_len',default=200,type=int)
 p.add_argument('--out_path',default='assimilation_data/V_assimilation',type=str)
-p.add_argument('--save',default=False,type=bool)
+p.add_argument('--save', action='store_true', help="save V_assimilation")
 args = p.parse_args()
 
 # ---------------------
