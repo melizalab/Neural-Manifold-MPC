@@ -15,6 +15,7 @@ p.add_argument('--stimuli_VAE_model_path', default='saved_models/stimulus_vaes/M
 p.add_argument('--SNN_model_path',default='saved_models/snns/SNN_classifier', type=str)
 p.add_argument('--V_assimilation_in_path',default='assimilation_data/V_assimilation', type=str)
 p.add_argument('--spikes_assimilation_out_path',default='assimilation_data/spikes_assimilation', type=str)
+p.add_argument('--save', action='store_true', help="save Z_assimilation")
 args = p.parse_args()
 
 # ---------------------
@@ -84,4 +85,6 @@ for split_indx,V_split in enumerate(V_assimilation.keys()):
 # ----------------------
 # Save Assimilation Data
 # ----------------------
-np.save(f'{args.spikes_assimilation_out_path}.npy',data_dict)
+if args.save == True:
+    print('Saving...')
+    np.save(f'{args.spikes_assimilation_out_path}.npy',data_dict)
