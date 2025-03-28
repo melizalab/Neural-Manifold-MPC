@@ -137,5 +137,5 @@ if args.save == True:
     print('Saving...')
     V_assimilation = {'V_train': V_train, 'V_val':V_val, 'V_test': V_test}
     np.save(f'{args.out_path}.npy',V_assimilation)
-breakpoint()
+
 
