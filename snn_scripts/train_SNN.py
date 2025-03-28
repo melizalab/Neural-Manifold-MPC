@@ -33,7 +33,7 @@ p.add_argument('--early_stopping_threshold',default=5, type = int)
 p.add_argument('--training_random_seed',default=138,type=int)
 # MNIST data paths
 p.add_argument('--mnist_data_path',default='mnist_data')
-p.add_argument('--download_MNIST',default=False)
+p.add_argument('--download_MNIST', action='store_true', help="download MNIST")
 args = p.parse_args()
 
 # ---------------------
