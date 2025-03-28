@@ -49,8 +49,8 @@ for _,(data,labels) in enumerate(test_loader):
         _, latent_rep, latent_logvar = model(data.to(device))
 
 resolution = 50
-Z1 = torch.linspace(latent_rep[:,0].min(),latent_rep[:,0].max(),resolution)
-Z2 = torch.linspace(latent_rep[:,1].min(), latent_rep[:,1].max(),resolution)
+V1 = torch.linspace(latent_rep[:,0].min(),latent_rep[:,0].max(),resolution)
+V2 = torch.linspace(latent_rep[:,1].min(), latent_rep[:,1].max(),resolution)
 fig,ax = plt.subplots(1,2)
 ax[0].scatter(latent_rep[:,0],latent_rep[:,1],s=1)
 ax[1].scatter(np.exp(0.5*latent_logvar[:,0]),np.exp(0.5*latent_logvar[:,1]),s=1)
@@ -75,7 +75,7 @@ fig, axs = plt.subplots(resolution, resolution, figsize=(10, 10))  # Create a 10
 with torch.no_grad():
     for i in range(resolution):
         for j in range(resolution):
-            img = model.decode(torch.tensor([Z1[i], Z2[j]]).reshape(1, -1)).view(28, 28)
+            img = model.decode(torch.tensor([V1[i], V2[j]]).reshape(1, -1)).view(28, 28)
             axs[i, j].imshow(img.cpu().numpy(), cmap='gray')  # Plot image on the grid
             axs[i, j].axis('off')  # Turn off axis labels
 
