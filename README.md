@@ -53,6 +53,27 @@ python -m snn_scripts.test_SNN
 ```
 
 ## Construct Neuron VAE (nVAE)
+1. Generate data used to stimulate AC (V assimilation data):
+```
+python -m stimulus_scripts.generate_stimulus_assimilation_data
+```
+2. Stimuluate AC with V assimilation:
+```
+python -m neuron_vae_scripts.generate_spikes_for_vae
+```
+3. Filter spikes with exponentially weighted lowpass filter (EWMA):
+```
+python -m neuron_vae_scripts.filter_spikes_with_ewma
+```
+4. For each levels of observation percetange, we want 10 randomly drawn ensembles for the AC. To get the indexes that responds to measuring specific neuruons in the AC, run:
+```
+python -m neuron_vae_scripts.generate_measurement_indxs
+```
+Note that the set of measured indexes used in the paper is provided in the ```assimiliation_data/spikes_measurement_indxs.pkl``` file in the repo.
+5. Pretrain the nVAE:
+```
+python -m neuron_vae_scripts.pretrain_SNN_VAE
+```
 
 ## Construct Latent Dynamics Model (LDM)
 
