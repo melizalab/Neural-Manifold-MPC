@@ -26,7 +26,7 @@ This repository contains the source code for implementing **Model Predictive Con
    ```bash
    python -m neural_manifold_control.mpc.mpc
    ```  
-# How to regenerate all data from paper
+# In Depth Workflow of Neural Manifold Control
 
 ## Construct Stimulus VAE (sVAE)
 If running for first time and MNIST dataset has not be downloaded:
@@ -77,6 +77,14 @@ python -m neuron_vae_scripts.pretrain_SNN_VAE
 ```
 
 ## Construct Latent Dynamics Model (LDM)
+Train LDM model using sVAE and pretrained nVAE:
+```
+python -m latent_dynamics_model.train_latent_dynamics_model
+```
+Test LDM and save resulting latent state predictions (Z assimilation):
+```
+python -m latent_dynamics_model.test_latent_dynamics_model
+```
 
 ## Get Reference Trajectories
 
