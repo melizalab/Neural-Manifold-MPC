@@ -22,7 +22,20 @@ This repository contains the source code for implementing **Model Predictive Con
    ```bash
    pip install -r requirements.txt
    ```  
-3. Run the simulation:  
+3. Run MPC for a single trial:  
    ```bash
    python -m neural_manifold_control.mpc.mpc
    ```  
+# How to regenerate all data from paper
+
+## Construct Stimulus VAE (sVAE)
+
+## Train Artificial Circuit (AC)
+
+## Construct Neuron VAE (nVAE)
+
+## Construct Latent Dynamics Model (LDM)
+
+## Get Reference Trajectories
+
+## 
