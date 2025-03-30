@@ -19,14 +19,12 @@ p.add_argument('--path_to_reference_trajectory',type=str,default='reference_traj
 p.add_argument('--trial_id',type=int,default=0)
 p.add_argument('--path_to_save_output',type=str,default='neural_manifold_control/reactive_control/pid_control/set_point_control')
 p.add_argument('--arc_num',type=int,default=1)
-#p.add_argument('--p_gains',nargs='+',default=[10, 50, 20, 50],type=float)
-p.add_argument('--p_gains',nargs='+',default=[90,0.5,10,0.5],type=float)
+p.add_argument('--p_gains',nargs='+',default=[0,0,0,0],type=float) # only used for grid search of good P controller gains (ie Kp)
 args = p.parse_args()
 
 # ----------
 # Import SNN
 # ----------
-
 print('Loading SNN...')
 snn_dict = torch.load(f'{args.path_to_SNN}.pt')
 snn_params = snn_dict['model_params']
@@ -68,6 +66,7 @@ elif args.path_to_reference_trajectory.split('/')[-1] == 'arc':
 # -----------------
 print('Creating controller...')
 def p_controller(state,ref,p_gains=np.array(args.p_gains).reshape(2,2)):
+    # Only used for grid search of P controller gains (ie Kp)
     state_error = ref-state
     return p_gains@state_error
 
@@ -110,10 +109,7 @@ spike_collector = np.zeros((n_steps,len(indxs['raw_indxs'])))
 # Set initial guess
 # -----------------
 Z0 = ref_traj[0,:]
-'''
-Z_1 nMSE: 0.012908929234801735
-Z_2 nMSE: 0.007656920998041243
-'''
+
 # ------------
 # Control Loop
 # ------------
@@ -165,6 +161,7 @@ z2_nMSE = nMSE(ref_traj[:,1],Z[:,1])
 print(f'Z_1 nMSE: {z1_nMSE}')
 print(f'Z_2 nMSE: {z2_nMSE}')
 
+# Uncomment for plot results
 '''
 from scipy.ndimage import gaussian_filter1d
 
