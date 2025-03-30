@@ -65,7 +65,7 @@ python -m neuron_vae_scripts.generate_spikes_for_vae
 ```
 python -m neuron_vae_scripts.filter_spikes_with_ewma
 ```
-4. For each levels of observation percetange, we want 10 randomly drawn ensembles for the AC. To get the indexes that responds to measuring specific neuruons in the AC, run:
+4. For each levels of observation percetange, we want 10 randomly drawn ensembles for the AC. To get the indexes that responds to measuring specific neurons in the AC, run:
 ```
 python -m neuron_vae_scripts.generate_measurement_indxs
 ```
