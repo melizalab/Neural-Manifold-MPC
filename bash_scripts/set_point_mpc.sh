@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Array of probabilities
-probs=(.2)
+probs=(.01 .05 .1 .2 .3 .4 .5 .6)
 
 
 # Loop through each probability
