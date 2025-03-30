@@ -24,16 +24,6 @@ def EWMA(data,alpha):
             cs_data[:,i] = alpha*data[:,i]+(1-alpha)*cs_data[:,i-1]
     return cs_data
 
-def lowpass_filter(data,alpha):
-    time_steps = data.shape[1]
-    cs_data = np.zeros_like(data)
-    for i in range(time_steps):
-        if i == 0:
-            cs_data[:,i] = data[:,i]
-        else:
-            cs_data[:,i] = cs_data[:,i-1]+alpha*(data[:,i]-cs_data[:,i-1])
-    return cs_data
-
 # -------------------------------
 # Compute for Train and Test Data
 # -------------------------------
@@ -45,9 +35,9 @@ for split in in_data.keys():
     reservoir_spikes = in_data[split]['reservoir_spikes']
     output_spikes = in_data[split]['output_spikes']
     # Apply EWMA Filter to Spikes
-    ewma_output_data = {'sensory_spikes': lowpass_filter(sensory_spikes,args.alpha),
-                        'reservoir_spikes': lowpass_filter(reservoir_spikes,args.alpha),
-                        'output_spikes': lowpass_filter(output_spikes,args.alpha)}
+    ewma_output_data = {'sensory_spikes': EWMA(sensory_spikes,args.alpha),
+                        'reservoir_spikes': EWMA(reservoir_spikes,args.alpha),
+                        'output_spikes': EWMA(output_spikes,args.alpha)}
     # Save to out_data dict
     out_data[f'{split}'] = ewma_output_data
 
