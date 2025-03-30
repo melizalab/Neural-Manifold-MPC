@@ -81,13 +81,35 @@ Train LDM model using sVAE and pretrained nVAE:
 ```
 python -m latent_dynamics_model.train_latent_dynamics_model
 ```
+
 Test LDM and save resulting latent state predictions (Z assimilation):
 ```
 python -m latent_dynamics_model.test_latent_dynamics_model
 ```
 
 ## Get Reference Trajectories
+Generate set point reference trajectories (for experiments I and II):
+```
+python -m reference_trajectories.generate_set_point_reference_trajectories
+```
+Generate arc refernece trajectories (for experiment III):
+```
+python -m refernce_trajectories.generate_arc_reference_trajectories
+```
 
 ## Perform MPC
+Run MPC for set point reference trajectories:
+```
+python -m neural_manifold_control.mpc.mpc
+```
+Run MPC for arc reference trajectories:
+```
+python -m neural_manifold_control.mpc.mpc --path_to_reference_trajectory=reference_trajectories/arcs --arc_num=1 --path_to_save_output=neural_manifold_control/mpc/arc_1_control
+```
+Make corresponding changes in args for ```arc_num=2```.
 
 ## Perform PID Control
+Run PID for set point reference trajectories:
+```
+python -m neural_manifold_control.reactive_control.reactive_control
+```
