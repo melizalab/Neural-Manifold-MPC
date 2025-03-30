@@ -33,9 +33,24 @@ If running for first time and MNIST dataset has not be downloaded:
 ```
 python -m stimulus_scripts.train_stimulus_VAE --download_MNIST
 ```
-Remove ```--download_MNIST``` flag if already in folder.
+Remove ```--download_MNIST``` flag if MNIST already in folder.
+
+Can test and visualize results with:
+```
+python -m stimulus_scripts.test_stimulus_VAE
+```
 
 ## Train Artificial Circuit (AC)
+If running without having downloading MNIST as above, run:
+```
+python -m snn_scripts.train_SNN --download_MNIST
+```
+Remove ```--download_MNIST``` flag if MNIST already in folder.
+
+Can test results and build distribution of classification accuracy with:
+```
+python -m snn_scripts.test_SNN
+```
 
 ## Construct Neuron VAE (nVAE)
 
