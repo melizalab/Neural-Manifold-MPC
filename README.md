@@ -113,3 +113,24 @@ Run PID for set point reference trajectories:
 ```
 python -m neural_manifold_control.reactive_control.reactive_control
 ```
+
+## Bash Scripts and Figures
+In paper, many trials were performed for each ensemble. The trial id is controlled by changing the ```--trail_id=number``` arg in the control scripts.
+
+After sVAE is trained and AC spikes have been filtered, run the following scripts to automate pretraining the nVAEs, LDM training/testing, reference trajectory generation, and MPC/PID control.
+```
+bash_scripts/pretrain_SNN_VAE.sh
+bash_scripts/train_latent_dynamics_model.sh
+bash_scripts/test_latent_dynamics_model.sh
+bash_scripts/generate_set_point_reference_trajectories.sh
+bash_scripts/generate_arc_referenence_trajectories.sh
+bash_scripts/set_point_mpc.sh
+bash_scripts/set_point_pid_control.sh
+bash_scripts/arc_mpc.sh
+```
+
+Figures in the manuscript can be recreated with their corresponding script in ```figures/scripts``` folder.
+E.g.:
+```
+python -m figures.scripts.Figure_2_A
+```
