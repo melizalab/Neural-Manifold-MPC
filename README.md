@@ -29,6 +29,11 @@ This repository contains the source code for implementing **Model Predictive Con
 # How to regenerate all data from paper
 
 ## Construct Stimulus VAE (sVAE)
+If running for first time and MNIST dataset has not be downloaded:
+```
+python -m stimulus_scripts.train_stimulus_VAE --download_MNIST
+```
+Remove ```--download_MNIST``` flag if already in folder.
 
 ## Train Artificial Circuit (AC)
 
@@ -38,4 +43,6 @@ This repository contains the source code for implementing **Model Predictive Con
 
 ## Get Reference Trajectories
 
-## 
+## Perform MPC
+
+## Perform PID Control
