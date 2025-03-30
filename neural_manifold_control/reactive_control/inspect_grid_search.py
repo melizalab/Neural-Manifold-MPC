@@ -8,12 +8,9 @@ def nMSE(z_ref,z_control):
     nmse = mse/(np.max(z_ref)-np.min(z_ref))
     return nmse
 
-
-
 file_path = 'neural_manifold_control/reactive_control/p_control/grid_search/*'
 best_m_nmse = float('inf')
 best_file = None
-
 
 for file in glob.glob(file_path):
     data = np.load(file,allow_pickle=True)[()]
@@ -22,14 +19,11 @@ for file in glob.glob(file_path):
     Z1_nmse = nMSE(Z_ref[:,0],Z_control[:,0])
     Z2_nmse = nMSE(Z_ref[:,1],Z_control[:,1])
     m_nmse = (Z1_nmse+Z2_nmse)/2
-
-
     if m_nmse < best_m_nmse:
         best_z1 = Z1_nmse
         best_z2 = Z2_nmse
         best_m_nmse = m_nmse
         best_file = file
-#neural_manifold_control/reactive_control/p_control/grid_search\prob_0.2_sample_0_gains_10.0_0.0_5.0_0.5.npy
 best_data = np.load(best_file,allow_pickle=True)[()]
 print(best_z1,best_z2)
 print(best_file)
