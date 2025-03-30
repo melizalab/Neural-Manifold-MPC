@@ -70,6 +70,7 @@ python -m neuron_vae_scripts.filter_spikes_with_ewma
 python -m neuron_vae_scripts.generate_measurement_indxs
 ```
 Note that the set of measured indexes used in the paper is provided in the ```assimiliation_data/spikes_measurement_indxs.pkl``` file in the repo.
+
 5. Pretrain the nVAE:
 ```
 python -m neuron_vae_scripts.pretrain_SNN_VAE
