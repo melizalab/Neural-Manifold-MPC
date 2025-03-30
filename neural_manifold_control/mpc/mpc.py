@@ -185,6 +185,7 @@ z2_nMSE = nMSE(ref_traj[:-args.n_horizon,1],Z[:,1])
 print(f'Z_1 nMSE: {z1_nMSE}')
 print(f'Z_2 nMSE: {z2_nMSE}')
 
+# Uncomment for plot results
 '''
 from scipy.ndimage import gaussian_filter1d
 
