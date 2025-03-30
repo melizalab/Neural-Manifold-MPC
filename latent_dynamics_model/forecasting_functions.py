@@ -10,8 +10,6 @@ def closed_loop_forecast(ldm_model,X_data,data_loader,device):
             V_n = V_n.to(device)
             # Get LDM predictions
             X_np1_hat, U_n_hat, Z_np1, Z_n, _, _= ldm_model(X_n,V_n)
-            # Last layer is a bernoulli
-            #X_np1_hat = torch.bernoulli(X_np1_hat)
     return X_np1_hat.detach().cpu().numpy(),Z_np1.detach().cpu().numpy(),Z_n.detach().cpu().numpy()
 
 
@@ -25,5 +23,4 @@ def open_loop_forecast(ldm_model,X_data,V_data,device,n_obs):
     with torch.no_grad():
         for i in range(1, n_obs):
             X_np1_hat[i],_,Z_np1_hat[i],_,_,_ = ldm_model(X_np1_hat[i - 1].view(1, -1), V_data[i - 1].view(1, -1))
-            #X_np1_hat[i] = torch.bernoulli(x_np1_hat)
     return X_np1_hat.detach().cpu().numpy(),Z_np1_hat.detach().cpu().numpy()
